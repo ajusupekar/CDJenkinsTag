@@ -1,5 +1,3 @@
-
-
 @LoginLaunch @Login
 Feature: To test Login functionality :
 
