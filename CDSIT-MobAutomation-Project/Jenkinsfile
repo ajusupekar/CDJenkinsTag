@@ -1,52 +1,13 @@
 pipeline {
-    agent  any
-    stages {
-            stage('Run functional test cases') {
-                steps {
-                    echo "Current workspace is ${env.WORKSPACE}"
-                    echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL} with parameter @${params.tagName}"
-                    //echo "mvn clean install -Dcucumber.options=\"--tags @${params.tagName}\""
-                    //sh "chmod -R 777 ./Drivers"
-					//sh "google-chrome --version"
-					sh "mkdir -m 700 /var/jenkins_home/Screenshot-${env.BUILD_ID}"
-					sh "mvn clean install -Dcucumber.options=\"--tags ${params.tagName}\""
-                }
-             }
-              stage('Screenshot capture') {
-                steps {
-
-					sh "mv /var/jenkins_home/Screenshot-${env.BUILD_ID} /var/jenkins_home/workspace/${env.JOB_NAME}/Screenshot-${env.BUILD_ID}"
-					sh "tar -zcvf Screenshot-${env.JOB_NAME}-${env.BUILD_ID}.tar.gz /var/jenkins_home/workspace/${env.JOB_NAME}/Screenshot-${env.BUILD_ID}"
-
-                }
-             } 
-//            stage('Generate Cucmber Reports') {
-//                steps {
-//                    cucumber buildStatus: "UNSTABLE",
-//                   fileIncludePattern: "**/cucumber.json",
-//                    jsonReportDirectory: 'target'
-//                }
-//             }
-			 stage('Send Email Notification with attachment') {
-                steps {
-					emailext attachmentsPattern: 'target/cucumber-reports/*.html,log4j-test-automation.log,src/main/resources/APIData_Reports/*.xlsx', body: '''${SCRIPT, template="groovy-html.template"}''',
-                    subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} -Automation Report",
-                    mimeType: 'text/html',to: "CDQATeam@currenciesdirect.com,rohit.surve@bnt-soft.com"
-                 }
-             }
-             stage('Delete Screenshot folder') {
-                             steps {
-             					sh "rm -rf /var/jenkins_home/workspace/${env.JOB_NAME}/Screenshot-*"
-                              }
-                          }
-
-
+  agent any
+  tools {
+      jdk "JAVA_HOME"
+  }
+  stages {
+    stage('Run functional test cases') {
+      steps {
+       bat "mvn -f CDSIT-MobAutomation-Project/pom.xml clean install -DjenkinsBrowser=${params.device} -DbrowserStack=${params.version} -Dcucumber.options=\"--tags ${params.tagName}\""
+      }
     }
-    post {
-          always {
-               cleanWs deleteDirs: true, notFailBuild: true
-               sendSlackNotifications currentBuild.result
-          }
-    }
+  }
 }
-
