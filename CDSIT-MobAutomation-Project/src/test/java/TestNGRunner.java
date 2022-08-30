@@ -13,7 +13,7 @@ import cucumber.api.CucumberOptions;
 		glue = { "com.cucumber.stepdefinition" }, strict = false, dryRun =false,
 
 
-		 tags = { "@PAD-3040" },
+		 tags = { "@PAD-2487_TC19" },
 
 
 		plugin = { "pretty", "html:target/site/cucumber-pretty",
