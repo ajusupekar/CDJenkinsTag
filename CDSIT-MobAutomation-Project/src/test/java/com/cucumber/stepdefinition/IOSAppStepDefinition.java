@@ -89,7 +89,7 @@ public class IOSAppStepDefinition {
 		        } 
 			
 		    
-		    String rep = vDeviceID.replaceAll("-", " ");    
+		    String rep = vDeviceID.replaceAll("-", " ");     
 		    
 			Assert.assertEquals(Constants.KEYWORD_PASS,Constants.key.launchIOSAppOnBrowserStack(Platform ,app ,rep, vVersion));
 			LogCapture.info(app + "Application installed and launched successfully......!!!!");
