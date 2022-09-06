@@ -544,7 +544,7 @@ public class Reusables {
 					// Browserstack app path
 					//Constants.IOSDC.setCapability(MobileCapabilityType.APP, Constants.BrowserCONFIG.getProperty("AppVersion"));
 					String VarBS_iOSCDAppVersion = Constants.CONFIG.getProperty("BS_iOSCDAppVersion");
-					LogCapture.info("Installing "+app+" Application with "+VarBS_iOSCDAppVersion+" Version............");
+					//LogCapture.info("Installing "+app+" Application with "+VarBS_iOSCDAppVersion+" Version............");
 					//LogCapture.info("Installing "+app+" Application............");
 					Constants.IOSDC.setCapability(MobileCapabilityType.APP,"bs://" + VarBS_iOSCDAppVersion);
 					

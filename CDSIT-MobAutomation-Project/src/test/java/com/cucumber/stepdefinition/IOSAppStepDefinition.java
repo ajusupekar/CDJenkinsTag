@@ -44,18 +44,70 @@ public class IOSAppStepDefinition {
 	 * LogCapture.info("Application installed and launched successfully......!!!!");
 	 * }
 	 */
+	
+	    
+	
 	@Given("^(ios) user installed the new (CD|TorFX) app and launched successfully$")
-	public void ios_user_installed_the_new_CD_app_and_launched_successfully(String Platform, String optionalValue)
-			throws Throwable {
-		//Assert.assertEquals("PASS", Constants.key.launchApp(optionalValue));
-		// Constants.key.getAPIAppLink();
-		// Constants.key.postAPIAppVersion();
-		Assert.assertEquals("PASS",Constants.key.launchAppOnBrowserStack(Platform,optionalValue));
-		String vIOSPlatformVersion = Constants.CONFIG.getProperty("Loc_IOSPlatformVersion");
-		iOSPlatformVersion = Double.parseDouble(vIOSPlatformVersion);
-		AppName = optionalValue;
-		LogCapture.info(optionalValue + " Application installed and launched successfully......!!!!");
+	public void ios_user_installed_the_new_CD_app_and_launched_successfully(String Platform, String app)
+			throws Throwable 
+	{
+		Platform = Constants.CONFIG.getProperty("platformNameIOS");
+		
+		if(Constants.CONFIG.getProperty("isLocalJenkins").equals("true"))
+		{
+			Assert.assertEquals("PASS", Constants.key.launchApp("App"));
+			LogCapture.info(app + " Application installed and launched successfully......!!!!");
+		}
+		else if(Constants.CONFIG.getProperty("isBrowserstackJenkins").equals("true"))
+		{
+			Thread.sleep(10000);
+			
+			 String vDeviceID = Constants.CONFIG.getProperty("bIOSDevice");
+		        LogCapture.info(app + "Application is launching on  device "+vDeviceID+"....");
+		        //System.out.println(vBrowserName);
+		        
+		        try {
+		            if (!Constants.JenkinsBrowser.isEmpty() || !Constants.JenkinsBrowser.equals("")) {
+		            	vDeviceID = Constants.JenkinsBrowser;
+		                LogCapture.info("Device ID is :" + vDeviceID);
+		            }
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+			
+		        
+		        String vVersion = Constants.CONFIG.getProperty("bIOSVersion");
+		        LogCapture.info(app + "Application is launching on  device version "+vVersion+"....");
+		        //System.out.println(vBrowserName);
+		        try {
+		            if (!Constants.BrowserStack.isEmpty() || !Constants.BrowserStack.equals("")) {
+		            	vVersion = Constants.BrowserStack;
+		                LogCapture.info("Device Version is :" + vVersion);
+		            }
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        } 
+			
+		    
+		    String rep = vDeviceID.replaceAll("-", " ");    
+		    
+			Assert.assertEquals(Constants.KEYWORD_PASS,Constants.key.launchIOSAppOnBrowserStack(Platform ,app ,rep, vVersion));
+			LogCapture.info(app + "Application installed and launched successfully......!!!!");
+		}
 	}
+	
+//	@Given("^(ios) user installed the new (CD|TorFX) app and launched successfully$")
+//	public void ios_user_installed_the_new_CD_app_and_launched_successfully(String Platform, String optionalValue)
+//			throws Throwable {
+//		//Assert.assertEquals("PASS", Constants.key.launchApp(optionalValue));
+//		// Constants.key.getAPIAppLink();
+//		// Constants.key.postAPIAppVersion();
+//		Assert.assertEquals("PASS",Constants.key.launchAppOnBrowserStack(Platform,optionalValue));
+//		String vIOSPlatformVersion = Constants.CONFIG.getProperty("Loc_IOSPlatformVersion");
+//		iOSPlatformVersion = Double.parseDouble(vIOSPlatformVersion);
+//		AppName = optionalValue;
+//		LogCapture.info(optionalValue + " Application installed and launched successfully......!!!!");
+//	}
 
 	@Given("^ios user launched already installed (CD|TorFx) app successfully$")
 	public void ios_user_launched_already_installed_CD_app_successfully(String optionalValue) throws Throwable {
