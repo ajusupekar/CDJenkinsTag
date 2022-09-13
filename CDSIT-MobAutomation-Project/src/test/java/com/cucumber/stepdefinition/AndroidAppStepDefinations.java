@@ -41,24 +41,24 @@ public class AndroidAppStepDefinations {
 		
 		if(Constants.CONFIG.getProperty("isLocalJenkins").equals("true"))
 		{
-//			Thread.sleep(10000);		
+			Thread.sleep(10000);		
 			//local device "device" in config 
-//	        String vDeviceID = Constants.CONFIG.getProperty("device");
-//          LogCapture.info(app+" Application is launching on  device "+vDeviceID+"....");
-//	        //System.out.println(vBrowserName);
-//	        Constants.JenkinsBrowser= (Objects.equals(Constants.JenkinsBrowser, "null")) ? "" : "";
-//	        try {
-//	            if (!Constants.JenkinsBrowser.isEmpty() || !Constants.JenkinsBrowser.equals("")) {
-//	            	vDeviceID = Constants.JenkinsBrowser;
-//	                LogCapture.info("Device ID is :" + vDeviceID);
-//	            }
-//	        } catch (Exception e) {
-//	            e.printStackTrace();
-//	        }
-//	        
-//	        Assert.assertEquals(Constants.KEYWORD_PASS, Constants.key.launchAppUsingDeviceId(vDeviceID));  
-//	        LogCapture.info("Device ID is :" + vDeviceID);		   
-//			LogCapture.info("Menta Application installed and launched successfully......!!!!");
+	        String vDeviceID = Constants.CONFIG.getProperty("realDeviceID");
+            LogCapture.info(app+" Application is launching on  device "+vDeviceID+"....");
+	        //System.out.println(vBrowserName);
+	        Constants.JenkinsBrowser= (Objects.equals(Constants.JenkinsBrowser, "null")) ? "" : "";
+	        try {
+	            if (!Constants.JenkinsBrowser.isEmpty() || !Constants.JenkinsBrowser.equals("")) {
+	            	vDeviceID = Constants.JenkinsBrowser;
+	                LogCapture.info("Device ID is :" + vDeviceID);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        
+	        Assert.assertEquals(Constants.KEYWORD_PASS, Constants.key.launchAppUseDeviceID(app, vDeviceID));  
+	        LogCapture.info("Device ID is :" + vDeviceID);		   
+			LogCapture.info(app + "Application installed and launched successfully......!!!!");
 		}
 		else if(Constants.CONFIG.getProperty("isBrowserstackJenkins").equals("true"))
 		{

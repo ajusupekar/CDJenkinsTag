@@ -158,6 +158,108 @@ public class Reusables {
 
 	}
 
+	public String launchAppUseDeviceID(String app , String realDeviceID) throws Exception {
+		try {
+			String appVersion = "";
+			// Writing logs in log file
+			LogCapture.info("Application setup started............");
+			// Checking platform for setting up desired capabilities
+			if (Constants.CONFIG.getProperty("platformName").equalsIgnoreCase("platformNameAndroid")) {		//Why PlatformName Feature File will look ok to pic platform name
+				
+				// Reading properties file and setting up desired capabilities
+				// for android platform
+				Constants.androidDc = new DesiredCapabilities();
+				//Constants.androidDc.setCapability("deviceName", Constants.CONFIG.getProperty("Loc_AndroidDeviceName"));
+				Constants.androidDc.setCapability("udid", realDeviceID);
+				//Constants.androidDc.setCapability("platformVersion", Constants.CONFIG.getProperty("Loc_AndroidPlatformVersion"));
+				Constants.androidDc.setCapability("skipUnlock", "true");
+
+			    //Constants.androidDc.setCapability("appVersion", Constants.CONFIG.getProperty("AndroidPlatformVersion"));
+				Constants.androidDc.setCapability("uiautomator2ServerInstallTimeout", 800000);
+				Constants.androidDc.setCapability("noReset", "false");
+				Constants.appiumServerUrl = Constants.CONFIG.getProperty("appiumServerUrl");
+				Constants.androidDc.setCapability("platformName", Constants.CONFIG.getProperty("platformName"));
+				
+				if (app.equalsIgnoreCase("CD")) {
+					Constants.androidDc.setCapability("appActivity", Constants.CONFIG.getProperty("CDAndroidAppActivity:"));
+//					Constants.androidDc.setCapability(MobileCapabilityType.APP,
+//							System.getProperty("user.dir") + "/Applications/CDAndroid/" + Constants.CONFIG.getProperty("CDAndroidAppVersion"));
+					Constants.androidDc.setCapability("appPackage",
+							Constants.CONFIG.getProperty("AndroidCDAppPackage"));
+				} else if (app.equalsIgnoreCase("TorFX")) {
+					Constants.androidDc.setCapability("appActivity", Constants.CONFIG.getProperty("TorFXAndroidAppActivity:"));
+//					Constants.androidDc.setCapability(MobileCapabilityType.APP,
+//							System.getProperty("user.dir") + "/Applications/TorFxAndroid/" + Constants.CONFIG.getProperty("TorFXAndroidAppVersion"));
+					Constants.androidDc.setCapability("appPackage",
+							Constants.CONFIG.getProperty("AndroidTorFxPackage"));
+				}
+
+				Constants.appiumServerUrl = Constants.CONFIG.getProperty("Loc_appiumServerUrl");
+				// creating android driver instance
+				Constants.driver = new AndroidDriver<MobileElement>(new URL(Constants.appiumServerUrl),
+						Constants.androidDc);
+				// WebdriverWait implementation
+				int waitInSeconds = Integer.parseInt(Constants.CONFIG.getProperty("waitInSecondforAndroid")); //Why form congif
+				Constants.wait = new WebDriverWait(Constants.driver, waitInSeconds);
+				takeSnapShot();
+
+			}
+
+			else if (Constants.CONFIG.getProperty("platformName").equalsIgnoreCase("iOS")) {
+				// Reading properties file and setting up desired capabilities for iOS platform
+				Constants.IOSDC = new DesiredCapabilities();
+				Constants.IOSDC.setCapability(MobileCapabilityType.DEVICE_NAME,
+						Constants.CONFIG.getProperty("Loc_IOSDeviceName"));
+				Constants.IOSDC.setCapability(MobileCapabilityType.UDID,
+						Constants.CONFIG.getProperty("Loc_IOSDeviceUdId"));
+				Constants.IOSDC.setCapability(MobileCapabilityType.PLATFORM_NAME,
+						Constants.CONFIG.getProperty("platformName"));
+				Constants.IOSDC.setCapability(MobileCapabilityType.PLATFORM_VERSION,
+						Constants.CONFIG.getProperty("Loc_IOSPlatformVersion"));
+				Constants.IOSDC.setCapability(MobileCapabilityType.NO_RESET, false);
+				Constants.IOSDC.setCapability(MobileCapabilityType.FULL_RESET, false);
+				// Constants.IOSDC.setCapability(MobileCapabilityType.FULL_RESET,true);
+				Constants.IOSDC.setCapability(MobileCapabilityType.AUTOMATION_NAME,
+						Constants.CONFIG.getProperty("automationName"));
+
+				Constants.IOSDC.setCapability("useNewWDA", false);
+				Constants.IOSDC.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 90000);
+				Constants.IOSDC.setCapability("xcodeOrgId", Constants.CONFIG.getProperty("xcodeOrgId"));
+				Constants.IOSDC.setCapability("xcodeSigningId", Constants.CONFIG.getProperty("xcodeSigningId"));
+
+				// LogCapture.info("Appplication installation process started.........");
+				// iOS app path to install on device
+				// Constants.IOSDC.setCapability(MobileCapabilityType.APP,System.getProperty("user.dir")
+				// + "/Application/CDIOSApplication/Version 3.0 (19)/CDHApplication.app");
+				if (app.equalsIgnoreCase("CD")) {
+					appVersion = Constants.CONFIG.getProperty("iOSCDAppVersion");
+					Constants.IOSDC.setCapability(MobileCapabilityType.APP, System.getProperty("user.dir")
+							+ "/Application/CDIOSApplication/" + appVersion + "/CDHApplication.app");
+					Constants.IOSDC.setCapability("bundleId", Constants.CONFIG.getProperty("CDIOSbundleId"));
+				} else if (app.equalsIgnoreCase("TorFx")) {
+					appVersion = Constants.CONFIG.getProperty("iOSTorFXAppVersion");
+					Constants.IOSDC.setCapability(MobileCapabilityType.APP, System.getProperty("user.dir")
+							+ "/Application/TorFXIOSApplication/" + appVersion + "/TorFx.app");
+					Constants.IOSDC.setCapability("bundleId", Constants.CONFIG.getProperty("TorFXIOSbundleId"));
+				}
+				Constants.appiumServerUrl = Constants.CONFIG.getProperty("Loc_appiumServerUrl");
+				Constants.driver = new IOSDriver<MobileElement>(new URL(Constants.appiumServerUrl), Constants.IOSDC);
+				// Webdriver wait implementation
+				Constants.waitInSeconds = Integer.parseInt(Constants.CONFIG.getProperty("WaitInSecondsForIOS"));
+				Constants.wait = new WebDriverWait(Constants.driver, Constants.waitInSeconds);
+				takeSnapShot();
+
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			LogCapture.info(
+					"Installation or launching app process failed...Please check provided configuration details.........!!!!");
+			return Constants.KEYWORD_FAIL;
+		}
+		return Constants.KEYWORD_PASS;
+
+	}
+	
 	// To launch existing app without resetting data -------> Reset App and
 	// No_Reset capabilities not working in IOS physical devices
 	public String LaunchExistingIOSApp(String app) {
