@@ -18,7 +18,7 @@ import cucumber.api.CucumberOptions;
 
 		plugin = { "pretty", "html:target/site/cucumber-pretty",
 				"com.cucumber.listener.ExtentCucumberFormatter:target/cucumber-reports/Extentreport.html",
-				"rerun:target/rerun.txt" }, monochrome = false)
+				"rerun:target/rerun.txt" }, monochrome = true)
 
 public class TestNGRunner extends TestNGCucumberExecutable {
 
